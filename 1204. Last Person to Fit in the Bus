@@ -1,0 +1,20 @@
+SUBMISSION
+with cte as
+(
+    SELECT *,
+        (SELECT SUM(weight) FROM queue q2 WHERE q2.turn <= q1.turn) AS total
+    FROM queue q1
+    ORDER BY turn
+),
+
+cte2 as
+(
+select *,
+rank() over(partition by turn order by total) as ranking
+from cte
+
+)
+select person_name
+from cte2
+where total<=1000
+order by turn desc limit 1
